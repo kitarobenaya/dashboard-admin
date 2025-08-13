@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Chart Bulanan</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <label>Pilih Bulan:</label>
+    <select id="bulanSelect">
+      <option value="0">Januari</option>
+      <option value="1">Februari</option>
+      <option value="2">Maret</option>
+      <option value="3">April</option>
+      <option value="4">Mei</option>
+      <!-- Tambahin sampe Desember kalau perlu -->
+    </select>
+
+    <canvas id="myChart" width="800" height="400"></canvas>
+
+    <script>
+      // Data dummy per bulan (tanggal 1-30)
+      const dataPerBulan = {
+        0: Array.from({ length: 31 }, (_, i) =>
+          Math.floor(Math.random() * 100)
+        ), // Januari
+        1: Array.from({ length: 28 }, (_, i) =>
+          Math.floor(Math.random() * 100)
+        ), // Februari
+        2: Array.from({ length: 31 }, (_, i) =>
+          Math.floor(Math.random() * 100)
+        ), // Maret
+        3: Array.from({ length: 30 }, (_, i) =>
+          Math.floor(Math.random() * 100)
+        ), // April
+        4: Array.from({ length: 31 }, (_, i) =>
+          Math.floor(Math.random() * 100)
+        ), // Mei
+      };
+
+      const ctx = document.getElementById("myChart").getContext("2d");
+      let chart;
+
+      function renderChart(bulanIndex) {
+        const data = dataPerBulan[bulanIndex];
+        const labels = Array.from(
+          { length: data.length },
+          (_, i) => `Tgl ${i + 1}`
+        );
+
+        if (chart) chart.destroy(); // Hapus chart lama
+
+        chart = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: `Data Bulan ${
+                  ["Januari", "Februari", "Maret", "April", "Mei"][bulanIndex]
+                }`,
+                data: data,
+                fill: false,
+                borderColor: "blue",
+                tension: 0.1,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            scales: {
+              y: { beginAtZero: true },
+            },
+          },
+        });
+      }
+
+      // Event listener dropdown
+      document
+        .getElementById("bulanSelect")
+        .addEventListener("change", function () {
+          const bulanIndex = parseInt(this.value);
+          renderChart(bulanIndex);
+        });
+
+      // Render pertama kali (default Januari)
+      renderChart(0);
+    </script>
+  </body>
+</html>
